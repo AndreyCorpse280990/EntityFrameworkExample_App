@@ -26,7 +26,9 @@ namespace EntityFrameworkExample_App.CLI
                 {"3", Add },
                 {"4", Delete },
                 {"5", Update },
-                {"6", Exit },
+                {"6", Filter},
+                {"7", Index},
+                {"8", Exit },
             };
         }
 
@@ -39,7 +41,9 @@ namespace EntityFrameworkExample_App.CLI
                 Console.WriteLine("3. Add");
                 Console.WriteLine("4. Delete");
                 Console.WriteLine("5. Update");
-                Console.WriteLine("6. Exit");
+                Console.WriteLine("6. Filter Students By Name");
+                Console.WriteLine("7. Index");
+                Console.WriteLine("8. Exit");
                 Console.Write("Enter choice: ");
                 string choice = Console.ReadLine() ?? "";
                 if (cliActions.ContainsKey(choice))
@@ -154,6 +158,38 @@ namespace EntityFrameworkExample_App.CLI
             }
         }
 
+        private void Filter()
+        {
+            Console.Write("Enter pattern to filter students by name: ");
+            string pattern = Console.ReadLine() ?? "";
+            List<Student> filteredStudents = _studentService.FilterStudentsByName(pattern);
+            
+            Console.WriteLine("Filtered students: ");
+            foreach (Student s in filteredStudents)
+            {
+                Console.WriteLine(s);
+            }
+        }
+
+        private void Index()
+        {
+            Console.WriteLine("Enter the percentage of scholarship increase and the minimum rating: ");
+    
+            string percentageStr = Console.ReadLine() ?? "";
+            string minRatingStr = Console.ReadLine() ?? "";
+            
+            if (int.TryParse(percentageStr, out int percentage) && int.TryParse(minRatingStr, out int minRating))
+            {
+                _studentService.GrantsIndexation(percentage, minRating);
+                Console.WriteLine("Scholarships have been indexed.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter valid numbers.");
+            }
+        }
+
+        
         private void Exit()
         {
             Environment.Exit(0);

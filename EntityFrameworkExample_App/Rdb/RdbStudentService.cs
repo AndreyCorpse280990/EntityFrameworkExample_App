@@ -75,12 +75,31 @@ namespace EntityFrameworkExample_App.Rdb
 
         public List<Student> FilterStudentsByName(string pattern)
         {
-            throw new NotImplementedException();
+            pattern = pattern.ToLower();
+    
+            return _db.Students
+                .Where(s => s.LastName.ToLower().Contains(pattern) || s.FirstName.ToLower().Contains(pattern))
+                .Select(rdbStudent => RdbStudent.MapToStudent(rdbStudent))
+                .ToList();
         }
 
         public void GrantsIndexation(int percantage, int minRating)
         {
-            throw new NotImplementedException();
+            if (percantage <= 0)
+            {
+                throw new ArgumentException("Percentage must be positive");
+            }
+            
+            List<RdbStudent> studentToUpdate = _db.Students
+                .Where(s => s.Rate >= minRating && s.Grants.HasValue)
+                .ToList();
+
+            foreach (var student in studentToUpdate)
+            {
+                student.Grants += student.Grants * percantage / 100;
+            }
+
+            _db.SaveChanges();
         }
 
         //
